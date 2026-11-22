@@ -1,0 +1,89 @@
+{
+  "index_patterns": ["valtersit-cve-*"],
+  "priority": 200,
+  "_meta": {
+    "description": "ValtersIT CVE scan results (valtersit-elastic.py). Copyright 2026 Valters Capital, SIA. Licensed under the Apache License, Version 2.0. ValtersIT is a trademark of Valters Capital, SIA - see NOTICE. Maintained by Hugo Valters.",
+    "managed_by": "valtersit-elastic"
+  },
+  "template": {
+    "settings": {
+      "number_of_shards": 1,
+      "number_of_replicas": 1,
+      "index.mapping.total_fields.limit": 2000
+    },
+    "mappings": {
+      "dynamic": true,
+      "dynamic_templates": [
+        {
+          "valtersit_result_strings": {
+            "path_match": "valtersit.result.*",
+            "match_mapping_type": "string",
+            "mapping": { "type": "keyword", "ignore_above": 1024 }
+          }
+        }
+      ],
+      "properties": {
+        "@timestamp": { "type": "date" },
+        "event": {
+          "properties": {
+            "kind": { "type": "keyword" },
+            "category": { "type": "keyword" },
+            "type": { "type": "keyword" },
+            "dataset": { "type": "keyword" }
+          }
+        },
+        "host": {
+          "properties": {
+            "name": { "type": "keyword" }
+          }
+        },
+        "observer": {
+          "properties": {
+            "vendor": { "type": "keyword" },
+            "product": { "type": "keyword" },
+            "type": { "type": "keyword" }
+          }
+        },
+        "vulnerability": {
+          "properties": {
+            "id": { "type": "keyword" },
+            "enumeration": { "type": "keyword" },
+            "classification": { "type": "keyword" },
+            "reference": { "type": "keyword" },
+            "severity": { "type": "keyword" },
+            "score": {
+              "properties": {
+                "base": { "type": "float" }
+              }
+            },
+            "scanner": {
+              "properties": {
+                "vendor": { "type": "keyword" }
+              }
+            }
+          }
+        },
+        "package": {
+          "properties": {
+            "name": { "type": "keyword" },
+            "version": { "type": "keyword" },
+            "fixed_version": { "type": "keyword" }
+          }
+        },
+        "valtersit": {
+          "properties": {
+            "scanner": { "type": "keyword" },
+            "scan": {
+              "properties": {
+                "matched_cves": { "type": "integer" },
+                "critical": { "type": "integer" },
+                "high": { "type": "integer" }
+              }
+            },
+            "result": { "type": "object" }
+          }
+        }
+      }
+    }
+  }
+}
